@@ -15,18 +15,18 @@ import statistics
 from utils.helpers import format_time
 
 # Configuration
-TARGET_LOSS = 4.5
-NUM_RUNS = 3
+NUM_RUNS = 10
+TARGET_TOKENS = 8000000
 
 def run_training(run_id):
     print(f"\n🚀 Starting Run {run_id}...")
     experiment_name = f"repro_run_{run_id}"
     cmd = [
         "python", "train_llm.py",
-        "--target_train_loss", str(TARGET_LOSS),
         "--experiment_name", experiment_name,
         "--compile", "true",
-        "--dataset_path", "processed_data/speedrun_40M"
+        "--dataset_path", "processed_data/speedrun_40M",
+        "--train_tokens", str(TARGET_TOKENS)
     ]
     
     # Small delay between runs to allow GPU to reach consistent state
@@ -56,8 +56,8 @@ def run_training(run_id):
 def main():
     results = []
     
-    print(f"=== Reproducing Speedrun (Target Loss: {TARGET_LOSS}) ===")
-    print(f"This script will train the model {NUM_RUNS} times to this loss so you can verify consistency.")
+    print(f"=== Reproducing Speedrun (Target: {TARGET_TOKENS:,} Tokens) ===")
+    print(f"This script will train the model {NUM_RUNS} times to verify consistency.")
     
     for i in range(1, NUM_RUNS + 1):
         res = run_training(i)
